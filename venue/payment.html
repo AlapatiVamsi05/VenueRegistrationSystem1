@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Payment</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 50%;
+            text-align: left;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #qrCodeContainer {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+        }
+        canvas {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Payment</h1>
+    <div class="container" id="paymentDetails"></div>
+    <div class="container" id="offerDetails"></div>
+
+    <div class="container">
+        <h3>Apply Coupon</h3>
+        <input type="text" id="couponCode" placeholder="Enter Coupon Code">
+        <button onclick="applyCoupon()">Apply Coupon</button>
+        <p id="discountMessage" style="color: green;"></p>
+    </div>
+
+    <form id="paymentForm" class="container">
+        <label for="paymentMethod">Select Payment Method:</label>
+        <select id="paymentMethod" onchange="togglePaymentFields()">
+            <option value="credit">Credit Card</option>
+            <option value="debit">Debit Card</option>
+            <option value="upi">UPI Payment</option>
+        </select>
+
+        <div id="cardDetails">
+            <label for="cardNumber">Card Number:</label>
+            <input type="text" id="cardNumber" placeholder="Enter Card Number">
+            <label for="cvv">CVV:</label>
+            <input type="password" id="cvv" placeholder="CVV">
+        </div>
+
+        <div id="qrCodeContainer">
+            <h3>Scan QR Code to Pay</h3>
+            <canvas id="qrCode"></canvas>
+        </div>
+
+        <h3>Final Amount: ₹<span id="finalPrice"></span></h3>
+
+        <button type="button" onclick="processPayment()">Complete Payment</button>
+    </form>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get("name");
+        const eventType = params.get("eventType");
+        let price = parseFloat(params.get("price"));
+
+        const eventOffers = {
+            "Music Concert": { discount: 0.15, coupon: "MUSIC15" },
+            "Tech Conference": { discount: 0.20, coupon: "TECH20" },
+            "Art Exhibition": { discount: 0.10, coupon: "ART10" }
+        };
+
+        if (eventOffers[eventType]) {
+            const eventOffer = eventOffers[eventType];
+            document.getElementById("offerDetails").innerHTML = `
+                <h3>Special Offer!</h3>
+                <p>Exclusive ${eventOffer.discount * 100}% off for ${eventType} 🎉</p>
+                <p>Use Coupon: <strong>${eventOffer.coupon}</strong></p>
+            `;
+        }
+
+        document.getElementById("paymentDetails").innerHTML = `
+            <h2>Event Summary</h2>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Event Type:</strong> ${eventType}</p>
+            <p><strong>Total Price:</strong> ₹<span id="originalPrice">${price}</span></p>
+        `;
+
+        document.getElementById("finalPrice").textContent = price;
+
+        function applyCoupon() {
+            const coupon = document.getElementById("couponCode").value.toUpperCase();
+            if (eventOffers[eventType] && coupon === eventOffers[eventType].coupon) {
+                const discount = eventOffers[eventType].discount;
+                const discountedPrice = price - (price * discount);
+                document.getElementById("finalPrice").textContent = discountedPrice.toFixed(2);
+                document.getElementById("discountMessage").textContent = `Coupon applied! You saved ₹${(price * discount).toFixed(2)} 🎉`;
+                price = discountedPrice;
+            } else {
+                document.getElementById("discountMessage").textContent = "Invalid coupon code ❌";
+            }
+        }
+
+        function togglePaymentFields() {
+            const method = document.getElementById("paymentMethod").value;
+            const cardFields = document.getElementById("cardDetails");
+            const qrCodeContainer = document.getElementById("qrCodeContainer");
+
+            if (method === "upi") {
+                cardFields.style.display = "none";
+                qrCodeContainer.style.display = "block";
+                generateQRCode();
+            } else {
+                cardFields.style.display = "block";
+                qrCodeContainer.style.display = "none";
+            }
+        }
+
+        function generateQRCode() {
+            const upiID = `upi://pay?pa=merchant@upi&pn=EventOrganizer&am=${encodeURIComponent(price)}&cu=INR&tn=${eventType}`;
+            new QRious({
+                element: document.getElementById("qrCode"),
+                value: upiID,
+                size: 200
+            });
+        }
+
+        function processPayment() {
+            const method = document.getElementById("paymentMethod").value;
+            if (method === "credit" || method === "debit") {
+                const cardNumber = document.getElementById("cardNumber").value;
+                const cvv = document.getElementById("cvv").value;
+                if (!cardNumber || !cvv) {
+                    alert("Please enter valid card details.");
+                    return;
+                }
+            }
+            alert("Payment Successful! 🎉 Your event is booked.");
+            window.location.href = "confirmation.html";
+        }
+    </script>
+</body>
+</html>

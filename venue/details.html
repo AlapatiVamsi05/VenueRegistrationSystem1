@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Select Venue</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 60%;
+            text-align: left;
+        }
+        .venue {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            background-color: #fff;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Available Venues</h1>
+    <div class="container" id="details"></div>
+    <div class="container" id="venueList"></div>
+
+    <script>
+        // Parse URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get("name");
+        const email = params.get("email");
+        const phone = params.get("phone");
+        const eventType = params.get("eventType");
+        const capacity = parseInt(params.get("capacity"));
+        const date = params.get("date");
+        const time = params.get("time");
+
+        // Venues data with INR prices and offers
+        const venues = [
+            { name: "Grand Palace", rating: 4.8, capacity: 200, manager: "John Doe", contact: "9876543210", price: 500000, offer: "10% off for early bookings!", reviews: 120 },
+            { name: "Sunset Gardens", rating: 4.9, capacity: 300, manager: "Alice Brown", contact: "9876543211", price: 700000, offer: "Complimentary decoration package!", reviews: 150 },
+            { name: "Royal Hall", rating: 4.6, capacity: 150, manager: "Michael Smith", contact: "9876543212", price: 400000, offer: "5% off for weekend events!", reviews: 95 }
+        ];
+
+        function displayDetails() {
+            const detailDiv = document.getElementById("details");
+            detailDiv.innerHTML = `
+                <h2>Registration Details</h2>
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Phone:</strong> ${phone}</p>
+                <p><strong>Event Type:</strong> ${eventType}</p>
+                <p><strong>Date & Time:</strong> ${date} at ${time}</p>
+                <p><strong>Guest Capacity:</strong> ${capacity}</p>
+            `;
+        }
+
+        function displayVenues() {
+            const venueList = document.getElementById("venueList");
+            const availableVenues = venues.filter(v => v.capacity >= capacity);
+
+            availableVenues.forEach(venue => {
+                venueList.innerHTML += `
+                    <div class="venue">
+                        <h3>${venue.name}</h3>
+                        <p>Rating: ⭐ ${venue.rating} (${venue.reviews} reviews)</p>
+                        <p>Capacity: ${venue.capacity}</p>
+                        <p>Manager: ${venue.manager} | 📞 ${venue.contact}</p>
+                        <p>Price: ₹${venue.price.toLocaleString()}</p>
+                        <p><strong>Special Offer:</strong> ${venue.offer}</p>
+                        <button onclick="proceedToPayment('${venue.name}', '${venue.price}')">Proceed to Payment</button>
+                    </div>`;
+            });
+        }
+
+        function proceedToPayment(venue, price) {
+            const queryString = `payment.html?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&phone=${encodeURIComponent(phone)}&eventType=${encodeURIComponent(eventType)}&capacity=${capacity}&date=${date}&time=${time}&venue=${encodeURIComponent(venue)}&price=${encodeURIComponent(price)}`;
+            window.location.href = queryString;
+        }
+
+        displayDetails();
+        displayVenues();
+    </script>
+</body>
+
+</html>
