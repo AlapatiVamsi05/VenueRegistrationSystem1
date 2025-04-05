@@ -1,3 +1,17 @@
 # VenueRegistrationSystem1
-Venue Registration System is a field project that gives you the most suitable venues for your events with just a simple form submission! 
-No need of going through the hassle of manual searching, we already did it for you. No need of signing into suspicious websites or subscribing to get the venues. Just fill the form according to your preferences and get your venues
+
+## 🎉 What is the Venue Registration System?
+
+**Venue Registration System** is a field project designed to help you find the most suitable venues for your events with just a simple form submission!
+
+No more wasting time on manual searches — we’ve already done the hard work for you.  
+No need to sign in to suspicious websites or subscribe to access venue details.  
+
+Just fill in your preferences, and we’ll instantly show you the venues that match your needs.
+
+## 💡 How to Use VRS
+
+We’ve already deployed a live version of the Venue Registration System!  
+Just click the link below to start using it:
+
+🔗 [VenueRegistrationSystem1](https://alapativamsi05.github.io/VenueRegistrationSystem1/)
