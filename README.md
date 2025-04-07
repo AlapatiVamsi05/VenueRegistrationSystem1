@@ -27,8 +27,8 @@ This project was proudly created and maintained by:
 
 - [AlapatiVamsi05](https://github.com/AlapatiVamsi05) 
 - [LakshmiSatvikaSuggula](https://github.com/LakshmiSatvikaSuggula)
-- [RenukaDevi](https://github.com/username)
-- [NamrathaKrishna](https://github.com/username) 
+- [RenukaDevi](https://github.com/renukadevikota23)
+- [NamrathaKrishna](https://github.com/) 
 
 We worked together to build a simple, effective, and user-friendly venue registration system.  
 Enjoy using the Venue Registration System.
